@@ -2,7 +2,7 @@
 // Utils
 import customResponseObject from '../utils/responses';
 import statusCodes from '../utils/statusCodes';
-import { nameErrors, phoneNumberErrors } from '../utils/messages';
+import { nameErrors, phoneNumberErrors, smsErrors, IdError } from '../utils/messages';
 
 exports.contactValidator = {
 
@@ -13,8 +13,10 @@ exports.contactValidator = {
   **/
   validateId: (req, res, next) => {
    const { id } = req.params;
-   if (!id) {
-    return customResponseObject(res, nameErrors.requiredError, badRequest);
+
+   const { badRequest } = statusCodes;
+   if (!id || /[a-zA-Z]+/.test(id)) {
+    return customResponseObject(res, IdError, badRequest);
    }
    req.body.id = parseInt(id, 10);
     return next();
@@ -45,4 +47,38 @@ exports.contactValidator = {
     }
     return next();
   },
+}
+
+exports.smsValidator = {
+ /** 
+  * 
+  * Validate sms details
+  * 
+ **/
+validateDetails: (req, res, next) => {
+ const { senderId, recipientId, message } = req.body;
+ const { badRequest } = statusCodes;
+ const reg = /[a-zA-Z]+/;
+
+   if (!senderId) {
+     return customResponseObject(res, smsErrors.requiredError('senderId'), badRequest);
+   }
+
+   if (!recipientId) {
+     return customResponseObject(res, smsErrors.requiredError('recipientId'), badRequest);
+   }
+
+   if (message.length === 0) {
+    return customResponseObject(res, smsErrors.lengthError('message'), badRequest);
+  }
+
+   if (!message) {
+     return customResponseObject(res, smsErrors.requiredError('message'), badRequest);
+   }
+  
+   if (reg.test(senderId) || reg.test(recipientId)) {
+     return customResponseObject(res, smsErrors.IdTypeError('senderId or recipientId'), badRequest);
+   }
+   return next();
+ },
 }

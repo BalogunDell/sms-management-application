@@ -1,6 +1,6 @@
 module.exports = {
   up(queryInterface, Sequelize) {
-    return queryInterface.createTable('SMS', {
+    return queryInterface.createTable('SMs', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -10,10 +10,20 @@ module.exports = {
       senderId: {
         type: Sequelize.INTEGER,
         allowNull: false,
+        onDelete: 'CASCADE',
+        references: {
+          model: 'Contacts',
+          key: 'id'
+      }
       },
       recipientId: {
         type: Sequelize.INTEGER,
         allowNull: false,
+        onDelete: 'CASCADE',
+        references: {
+          model: 'Contacts',
+          key: 'id'
+        }
       },
       message: {
         type: Sequelize.STRING,
@@ -23,7 +33,7 @@ module.exports = {
       status: {
         type: Sequelize.ENUM,
         values: ['read', 'unread', 'delivered'],
-        allowNull: false,
+        allowNull: true,
       },
       createdAt: {
         allowNull: false,
@@ -36,6 +46,6 @@ module.exports = {
     });
   },
   down(queryInterface) {
-    return queryInterface.dropTable('SMS');
+    return queryInterface.dropTable('SMs');
   }
 };

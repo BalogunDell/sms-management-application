@@ -1,26 +1,45 @@
 const SMS = (sequelize, DataTypes) => {
-  const sms = sequelize.define('SMS', {
+  const sms = sequelize.define('SMs', {
     senderId: {
       type: DataTypes.INTEGER,
       allowNull: false,
+      onDelete: 'CASCADE',
+      references: {
+        model: 'Contacts',
+        key: 'id'
+      }
     },
-    recipientId: DataTypes.INTEGER,
+    recipientId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      onDelete: 'CASCADE',
+      references: {
+        model: 'Contacts',
+        key: 'id'
+      }
+    },
     message: {
       type: DataTypes.STRING,
       allowNull: false,
+      notEmpty: true,
     },
     status: {
       type: DataTypes.ENUM,
-      allowNull: false,
-      values: ['read', 'unread', 'delivered']
+      allowNull: true,
+      values: ['delivered', 'read'],
+      defaultValue: 'delivered'
     },
-  }, {
-    classMethods: {
-      associate: function(models) {
-        // associations can be defined here
-      }
-    }
   });
+      sms.associate = (models) => {
+       sms.belongsTo(models.Contact, {
+         foreignKey: 'senderId',
+         onDelete: 'CASCADE',
+       }),
+       sms.belongsTo(models.Contact, {
+        foreignKey: 'recipientId',
+        onDelete: 'CASCADE',
+      })
+  };
   return sms;
 };
 

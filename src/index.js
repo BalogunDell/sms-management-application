@@ -20,4 +20,6 @@ app.use('/api/v1', appRoutes);
 // Listen for connection requests
 app.listen(port, (error) => {
   error ? console.log(error): console.log(`App started on ${port}`);
-})
+});
+
+export default app;

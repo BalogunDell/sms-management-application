@@ -1,4 +1,5 @@
 import models from '../models/';
+import Sequelize from 'sequelize';
 
 import { errorHandler } from '../utils/errorHandler';
 import { responseStatusMessage } from '../utils/messages';
@@ -6,7 +7,8 @@ import { responseStatusMessage } from '../utils/messages';
 import customResponseObject from '../utils/responses';
 import statusCodes from '../utils/statusCodes';
 
-const { Contact } = models;
+const { Contact, SMs } = models;
+
 exports.contactController = {
 
     /** 
@@ -25,11 +27,10 @@ exports.contactController = {
         const otherFields = { id, name, phoneNumber };
         const { success } = responseStatusMessage;
 
-        return customResponseObject(res, success, statusCodes.created, otherFields);
+        return customResponseObject(res, success, statusCodes.created, {details: otherFields });
       })
       .catch((error) => {
         const { message, statusCode } = errorHandler(error);
-
         return customResponseObject(res, message, statusCode);
       });
   },
@@ -43,43 +44,79 @@ exports.contactController = {
     **/
     read: (req, res) => {
       const { id } = req.body;
-
-      Contact.findByPk(id)
-      .then((response) => {
-        if (!response) {
-          const { contactNotFound } = responseStatusMessage;
-
-          return customResponseObject(res, contactNotFound, statusCodes.notFound);
+      const { contactNotFound, notContacts } = responseStatusMessage;
+      const queryString = id ? 'findByPk' : 'findAll';
+      const message = id ? contactNotFound : notContacts;
+      const queryBuilder = (queryString) => {
+        if (queryString === 'findAll') {
+          return Contact[queryString]();
         }
-        const { name, phoneNumber, id } = response.dataValues;
-        const otherFields = { id, name, phoneNumber };
-        const { success } = responseStatusMessage;
+        return Contact[queryString](id, { 
+          include: [ 
+            { model: SMs, as: 'recievedMessages' },
+            { model: SMs, as: 'sentMessages' },
 
-        return customResponseObject(res, success, statusCodes.created, otherFields);
+          ] 
+        });
+
+      };
+      queryBuilder(queryString).then((response) => {
+        if (!response) {
+          return customResponseObject(res, message, statusCodes.notFound);
+        }        
+        const responseObject = id ? response.dataValues : response;
+        const key = id ? 'contact' : 'contacts';
+        const { success } = responseStatusMessage;
+        return customResponseObject(res, success, statusCodes.success, { [key]: responseObject });
       })
       .catch(() => {});
   },
 
     /** 
-    * Update a contact
+    * Update a sms
     * 
     * @param {integer} - contactId
     * 
     * @returns {object} - Updated details
     **/
   update: (req, res) => {
-    return res.status(200).json({ message: 'update' })
+    const { name, phoneNumber, id } = req.body;
+  
+    Contact.update({ name, phoneNumber}, { where: { id }})
+      .then((response) => {
+        if (response[0] === 0) {
+          const { contactNotFound } = responseStatusMessage;
+          return customResponseObject(res, contactNotFound, statusCodes.notFound);
+        }
+        const otherFields = { id, name, phoneNumber };
+        const { success } = responseStatusMessage;
+        return customResponseObject(res, success, statusCodes.success, { details: otherFields });
+      })
+      .catch((error) => {
+        const { message, statusCode } = errorHandler(error);
+        return customResponseObject(res, message, statusCode);
+      });
   },
 
   /** 
-    * Delete a contact
+    * Delete a sms
     * 
     * @param {integer} - contactId
     * 
     * @returns {object} - Delete status
     **/
    delete: (req, res) => {
-    return res.status(200).json({ message: 'delete' })
+     const { id } = req.body;
+     Contact.destroy({ where: { id }})
+      .then((response) => {
+        if (response === 0) {
+          const { contactNotFound } = responseStatusMessage;
+          return customResponseObject(res, contactNotFound, statusCodes.notFound);
+        }
+        const { success } = responseStatusMessage;
+        return customResponseObject(res, success, statusCodes.success);
+      })
+      .catch(() => {});
   }
 
 }

@@ -39,13 +39,19 @@ const Contact = (sequelize, DataTypes) => {
         },
       }
     }
-  }, {
-    classMethods: {
-      associate: function(models) {
-        // associations can be defined here
-      }
-    }
   });
+     contact.associate = (models) => {
+        contact.hasMany(models.SMs, {
+          foreignKey: 'senderId',
+          onDelete: 'CASCADE',
+          as: 'sentMessages'
+        }),
+        contact.hasMany(models.SMs, {
+          foreignKey: 'recipientId',
+          onDelete: 'CASCADE',
+          as: 'recievedMessages'
+        })
+  };
   return contact;
 };
 

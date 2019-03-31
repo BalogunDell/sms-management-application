@@ -6,7 +6,7 @@ const customResponseObject = (
     otherFields=null
   ) => {
     if (otherFields) {
-      return res.status(statusCode).json({ message, details: { ...otherFields } });
+      return res.status(statusCode).json({ message, ...otherFields });
     }
     return res.status(statusCode).json({ message });
   };
