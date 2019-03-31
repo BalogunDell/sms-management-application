@@ -1,0 +1,48 @@
+{
+  "name": "sms-management-application",
+  "version": "1.0.0",
+  "description": "Sms management application",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon --watch src --exec babel-node ./src/index.js",
+    "migrate": "sequelize db:migrate",
+    "migrate:undo": "sequelize db:migrate:undo:all",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BalogunDell/sms-management-application.git"
+  },
+  "author": "Balogun Abiodun D.",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/BalogunDell/sms-management-application/issues"
+  },
+  "homepage": "https://github.com/BalogunDell/sms-management-application#readme",
+  "dependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.3",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-register": "^6.26.0",
+    "body-parser": "^1.18.3",
+    "chai": "^4.2.0",
+    "cors": "^2.8.5",
+    "dotenv": "^7.0.0",
+    "express": "^4.16.4",
+    "joi": "^14.3.1",
+    "mocha": "^6.0.2",
+    "moment": "^2.24.0",
+    "morgan": "^1.9.1",
+    "mysql2": "^1.6.5",
+    "pg": "^7.9.0",
+    "pg-hstore": "^2.3.2",
+    "sequelize": "^5.2.7",
+    "sequelize-cli": "^5.4.0",
+    "supertest": "^4.0.2"
+  },
+  "devDependencies": {
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "nodemon": "^1.18.10"
+  }
+}
