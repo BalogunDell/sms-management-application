@@ -2,11 +2,11 @@ import express from 'express';
 
 // Controllers
 import { contactController } from '../controllers/contactController';
-import { smsController } from '../controllers/smsController';
+import { messageController } from '../controllers/messageController';
 
 
 // Middlewares
-import { contactValidator, smsValidator } from '../middlewares/contactValidator';
+import { contactValidator, smsValidator } from '../middlewares/validator';
 
 // Utils
 import customResponseObject from '../utils/responses';
@@ -45,17 +45,17 @@ router.route(
 // Create, edit, and delete sms
 router.route(
   '/messages',
-  ).get(smsController.read)
-    .post(smsValidator.validateDetails, smsController.create);
+  ).get(messageController.read)
+    .post(smsValidator.validateDetails, messageController.create);
 
 
 
 router.route(
   '/messages/:id'
-  ).get(contactValidator.validateId, smsController.read)
+  ).get(contactValidator.validateId, messageController.read)
    .delete(
-    contactValidator.validateId,
-      smsController.delete);
+      contactValidator.validateId,
+      messageController.delete);
 
     
 

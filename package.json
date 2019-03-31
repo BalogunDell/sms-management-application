@@ -6,8 +6,7 @@
   "scripts": {
     "start": "nodemon --watch src --exec babel-node ./src/index.js",
     "migrate": "sequelize db:migrate",
-    "migrate:undo": "sequelize db:migrate:undo:all",
-    "test": "NODE_ENV=test node_modules/.bin/nyc --reporter=lcov --reporter=text mocha --exit --require babel-register ./tests/*.test.js"
+    "migrate:undo": "sequelize db:migrate:undo:all"
   },
   "repository": {
     "type": "git",

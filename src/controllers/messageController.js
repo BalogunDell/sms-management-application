@@ -1,4 +1,4 @@
-import models from '../models/';
+import models from '../models';
 
 import { errorHandler } from '../utils/errorHandler';
 import { responseStatusMessage } from '../utils/messages';
@@ -8,7 +8,7 @@ import statusCodes from '../utils/statusCodes';
 
 const { SMs } = models;
 
-exports.smsController = {
+exports.messageController = {
 
     /** 
     * Create a contact
