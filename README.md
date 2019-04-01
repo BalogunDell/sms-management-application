@@ -2,7 +2,6 @@
 sms-generator-application
 
 ## Technologies Used
-#### Backend
 * NodeJS
 * Express
 * Postgres
@@ -10,9 +9,6 @@ sms-generator-application
 * Chai 
 * Mocha
 * Supertest
-#### Frontend
-* React
-
 
 ## Installation
 1.  Git clone this repository `https://github.com/Balogundell/sms-management-application.git`
